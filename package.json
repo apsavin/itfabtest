@@ -1,0 +1,26 @@
+{
+  "name": "itfactorytest",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "mocha --recursive test"
+  },
+  "dependencies": {
+    "config": "^1.21.0",
+    "conform": "0.2.12",
+    "express": "4.14.*",
+    "jade": "1.11.*",
+    "js-yaml": "3.6.*",
+    "lru-cache": "4.0.*",
+    "moment": "2.14.*",
+    "superagent": "2.2.*",
+    "winston": "2.2.*"
+  },
+  "devDependencies": {
+    "chai": "3.5.*",
+    "mocha": "3.0.*",
+    "nodemon": "1.10.*"
+  }
+}

@@ -1,0 +1,63 @@
+html
+	head
+		title Reddit data processor
+		style.
+			.hidden {
+				display: none;
+			}
+	body
+		h1 Reddit data processor
+		form(action='/reddit/data' class='reddit-form')
+			input(name='url' placeholder='url' required value='https://www.reddit.com/r/javascript/.json')
+			div
+				select(name='action[name]' required)
+					each action in actions
+						option(value=action)= action
+				each action, i in actions
+					- var disabled = Boolean(i);
+					.reddit-form__action-options(class='reddit-form__action-options_type_' + action + (disabled ? ' hidden' : '') )
+						case action
+							when 'getShortInfoSorted'
+								include actions/getShortInfoSorted.jade
+							when 'getStatByDomain'
+								include actions/getStatByDomain.jade
+			div
+				select(name='format[name]' required)
+					each format in formats
+						option(value=format)= format
+				each format, i in formats
+					- var disabled = Boolean(i);
+					.reddit-form__format-options(class='reddit-form__format-options_type_' + format + (disabled ? ' hidden' : ''))
+						case format
+							when 'csv'
+								include formats/csv.jade
+							when 'sql'
+								include formats/sql.jade
+			button(type='submit') send
+			pre.result
+
+			script(src="https://code.jquery.com/jquery-3.1.0.min.js"
+							integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous")
+			script.
+				$(() => {
+					['action', 'format'].forEach(type => {
+						const cssClass = `reddit-form__${type}-options`;
+						const $typeOptions = $(`.${cssClass}`);
+						$(`select[name="${type}[name]"]`).on('change', event => {
+							$typeOptions.addClass('hidden').find('input,select').attr('disabled', true);
+							$typeOptions
+								.filter(`.${cssClass}_type_${event.target.value}`).removeClass('hidden')
+									.find('input,select').attr('disabled', false);
+						});
+					});
+
+					const $form = $('form').on('submit', event => {
+						event.preventDefault();
+						$.ajax({
+							url: $form.prop('action'),
+							data: $form.serializeArray(),
+							success: res => $('.result').text(res),
+							error: jqXHR => $('.result').text(jqXHR.responseText),
+						});
+					});
+				});
